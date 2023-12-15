@@ -39,8 +39,9 @@
     </footer>
   </div>
   <script>
-  const todoList = []
+  let todoList = [];
   function 투두입력받아서추가하기(todoText){
+    투두저장하기(todoList);
     if(todoText !== ""){
       const todo = {
         text: todoText,
@@ -66,6 +67,7 @@
 		}
   }
   function 투두토글하기(변수){
+    투두저장하기(todoList);
     if(todoList[변수].done === true){
       todoList[변수].done = false;
     }
@@ -73,6 +75,24 @@
       todoList[변수].done = true;
     }
   }
+
+  function 투두저장하기(todoList){
+    localStorage.setItem("todos", JSON.stringify(todoList));
+
+  }
+  function 투두초기화하기(params){
+    const todos = localStorage.getItem("todos");
+    if (todos===null) {
+      todoList =[];
+    } else {
+      todoList = JSON.parse(todos);
+      
+    }
+
+
+  }
+
+
   function 투두화면에그려주기(todoList){
     const todoListUl = document.querySelector("#todo-list");
     todoListUl.innerHTML = ""
@@ -96,6 +116,7 @@
         }
         toggleBtn.addEventListener("click",function(){
           투두토글하기(변수);
+          투두저장하기(todoList);
           투두화면에그려주기(todoList);
         })
 
@@ -134,9 +155,12 @@
   }
   document.querySelector("#btn-add").addEventListener("click",추가버튼클릭이벤트);
   function init(){
+    투두초기화하기();
+    투두화면에그려주기(todoList);
     const todoListUl = document.querySelector("#todo-list");
     if(todoListUl.childElementCount<1){
       todoListUl.innerText = "할일이 없습니다."
+    
     }
   }
 init()
